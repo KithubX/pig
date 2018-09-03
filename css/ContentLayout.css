@@ -1,0 +1,138 @@
+/*#############################################
+
+  All Pages generated with dbQwikSite include a 
+  'grid' (HTML Table) around the main body of the 
+  page (after the header and before the footer).
+
+  This grid lets you place custom code/contents 
+  on all sides and corners of that main body 
+  contents.
+  
+  This CSS file is a CSS template used to control
+  Content Layouts grid properties.
+
+  You may set css properties common to all 
+  cells/divs and/or individually for each id.
+
+##############################################*/
+
+
+/* Content Layout Main Table style */
+/* --------------------------------*/
+#QS_Content_Layout_1_Table {
+	border: 0px;
+	padding: 0px;
+	margin: 0px;
+}
+
+/* 'Rows' Common Styles */
+/* ---------------------*/
+#QS_Content_Layout_1_TopRow, #QS_Content_Layout_1_MiddleRow, #QS_Content_Layout_1_BottomRow {
+}
+
+/* Individual Rows styles */
+#QS_Content_Layout_1_TopRow  {
+}
+
+#QS_Content_Layout_1_MiddleRow {
+}
+
+#QS_Content_Layout_1_BottomRow {
+}
+
+
+/* 'Cells' (TDs) Common Styles */
+/* ----------------------------*/
+#QS_Content_Layout_1_NorthWest, #QS_Content_Layout_1_North,   #QS_Content_Layout_1_NorthEast,
+#QS_Content_Layout_1_West,      #QS_Content_Layout_1_Center,  #QS_Content_Layout_1_East,
+#QS_Content_Layout_1_SouthWest, #QS_Content_Layout_1_South,   #QS_Content_Layout_1_SouthEast {
+}
+
+/* 'Divs' Common Styles */
+/* ---------------------*/
+#QS_Content_Layout_1_NorthWestDiv,  #QS_Content_Layout_1_NorthDiv,   #QS_Content_Layout_1_NorthEastDiv,
+#QS_Content_Layout_1_WestDiv,       #QS_Content_Layout_1_CenterDiv,  #QS_Content_Layout_1_EastDiv, 
+#QS_Content_Layout_1_SouthWestDiv,  #QS_Content_Layout_1_SouthDiv,   #QS_Content_Layout_1_SouthEastDiv {
+}
+
+
+/* Individual Cell Styles */
+/* -----------------------*/
+#QS_Content_Layout_1_NorthWest {
+	text-align: left;
+	vertical-align: top;
+}
+
+#QS_Content_Layout_1_North {
+	text-align: center;
+	vertical-align: top;
+}
+
+#QS_Content_Layout_1_NorthEast {
+	text-align: right;
+	vertical-align: top;
+}
+
+#QS_Content_Layout_1_West {
+	text-align: left;
+	vertical-align: top;
+}
+
+#QS_Content_Layout_1_Center {
+	text-align: center;
+	vertical-align: top;
+}
+
+#QS_Content_Layout_1_East {
+	text-align: right;
+	vertical-align: top;
+}
+
+#QS_Content_Layout_1_SouthWest {
+	text-align: left;
+	vertical-align: top;
+}
+
+#QS_Content_Layout_1_South {
+	vertical-align: top;
+	text-align: center;
+}
+
+#QS_Content_Layout_1_SouthEast {
+	text-align: right;
+	vertical-align: top;
+}
+
+
+/* Individual DIVs Styles */
+/* -----------------------*/
+#QS_Content_Layout_1_NorthWestDiv {
+}
+
+#QS_Content_Layout_1_NorthDiv {
+}
+
+#QS_Content_Layout_1_NorthEastDiv {
+}
+
+#QS_Content_Layout_1_WestDiv {
+}
+
+#QS_Content_Layout_1_CenterDiv {
+	text-align: -moz-center;
+}
+
+#QS_Content_Layout_1_EastDiv {
+}
+
+#QS_Content_Layout_1_SouthWestDiv {
+}
+
+#QS_Content_Layout_1_SouthDiv {
+}
+
+#QS_Content_Layout_1_SouthEastDiv {
+}
+
+
+

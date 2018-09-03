@@ -1,0 +1,825 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<!--  This is a file produced by dbQwikSite.  It allows designers to access and administrate thier sites more easily.
+      it uses AJAX to call server admin modules.  Thie page acts as the "doorway" to the admin functions.
+-->
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>dbQwikSite Site Administration</title>
+<!--core Yahoo-->
+<link rel="stylesheet" type="text/css" href="js/container.css" />
+<script type="text/javascript" src="js/yahoo-dom-event.js"></script>
+<script type="text/javascript" src="js/container-min.js"></script>
+<script type="text/javascript" src="js/yahoo-min.js"></script>
+<script type="text/javascript" src="js/event-min.js"></script>
+<script type="text/javascript" src="js/connection-min.js"></script>
+<script type="text/javascript" src="js/datasource-min.js"></script>
+<script type="text/javascript" src="js/autocomplete-min.js"></script>
+<script type="text/javascript" src="js/data.js"></script>
+
+<!-- script that submits the login request  -->
+<script type="text/javascript" src="js/qsAdminConfig.js"></script>
+
+<SCRIPT language="JavaScript">
+//========== AJAX HTML Loader =================== 
+var adminHTMLAJAXLoader = '<table width="32%" border="0" align="center" cellpadding="3" cellspacing="0">';
+    adminHTMLAJAXLoader += '  <tr>';
+    adminHTMLAJAXLoader += '    <td height="100" align="center" valign="middle"><img src="images/ajax_load1.gif" width="271" height="22" /><br />';
+    adminHTMLAJAXLoader += '  <br>&nbsp;&nbsp;&nbsp;&nbsp;Please wait ...</td>';
+    adminHTMLAJAXLoader += '  </tr>';
+    adminHTMLAJAXLoader += '</table> ';
+	
+var adminHTMLAJAXLoader2  = '<div align="center">'
+	adminHTMLAJAXLoader2 += '  <img src="images/ajax_load1.gif" width="220" height="19" />'
+	adminHTMLAJAXLoader2 += '   <br />'
+	adminHTMLAJAXLoader2 += '   Please wait...' 
+	adminHTMLAJAXLoader2 += '</div>'	
+	
+	
+//========= Detect Language Variables ===========
+var IsASPAvailable = false;
+var IsPHPAvailable = false;
+
+//========= Request Type Constants ==============
+var ACT_MYSQL_TEST = 0;
+var ACT_MYSQL_DB_TEST = 1;
+var ACT_LOAD_MYSQL_DB_LIST = 2;
+var ACT_CREATE_DATABASE = 3;
+var ACT_SHOW_MYSQL_ADMIN = 4;
+var ACT_SHOW_ADO_CONN_TEST = 5;
+var ACT_TEST_ADO_CONN = 6;
+
+
+
+//Trim string function 
+function Trim(s) {
+  var temp = " ";
+  var i = 0;
+  while ((temp == " ") && (i <= s.length)) {
+    temp = s.charAt(i);
+    i++;
+  }
+  s = s.substring(i - 1, s.length);
+  return(s);
+}
+
+
+//Detect ASP server available 
+function DetectASPServer(){
+    var sUrl = "ASPPing.asp?";
+	var objStatus = document.getElementById("divASPStatus");
+	var txtASPOK = '&bull;&nbsp;<span class="SuccessMessageStyle" ><b>ASP Available &nbsp; </b> </span>';
+	var txtASPNotOK = '&bull;&nbsp;<span class="ErrorMessageStyle" ><b>ASP Unavailable &nbsp; </b></span>'; 
+	
+	//var argumentObj = eval('(' + sParameters + ')');
+	var handleSuccess = function(j){
+	   //if (j.responseText != "OK") {    //This condition does not work in BabyWebServer. 
+	   if (j.responseText.indexOf("<%") >= 0) {  //Use this instead. 
+	     IsASPAvailable = false;
+	     objStatus.innerHTML = txtASPNotOK;
+	   } else{
+	     IsASPAvailable = true;
+	     objStatus.innerHTML = txtASPOK; 
+	   }  
+	   EnabledLoginButtonByServerAvailable(); 
+	}
+    var handleFailure = function(j){
+	   IsASPAvailable = false;
+	   objStatus.innerHTML = txtASPNotOK;
+    }
+	var callback ={
+	  success: handleSuccess,
+	  failure: handleFailure,
+	  cache: false
+	};
+	 YAHOO.util.Connect.asyncRequest('GET', sUrl, callback);
+} //end fucntion 
+
+//Detect PHP server available 
+function DetectPHPServer(){
+    var sUrl = "PHPPing.php";
+	var objStatus = document.getElementById("divPHPStatus");
+	var txtPHPOK = '&bull;&nbsp;<span class="SuccessMessageStyle" ><b>PHP Available &nbsp; </b> </span>';
+	var txtPHPNotOK = '&bull;&nbsp;<span class="ErrorMessageStyle" ><b>PHP Unavailable &nbsp; </b></span>';
+	//var argumentObj = eval('(' + sParameters + ')');
+	var handleSuccess = function(k){
+	   //alert(k.responseText);
+	   //if (k.responseText != "OK") {    //This condition does not work in BabyWebServer. 
+	   if (k.responseText.indexOf("<?") >= 0) {  //Use this instead.  
+		 IsPHPAvailable = false;
+	     objStatus.innerHTML = txtPHPNotOK;
+	   } else {   
+	   	 IsPHPAvailable = true;
+	     objStatus.innerHTML = txtPHPOK; 
+	   }
+	   EnabledLoginButtonByServerAvailable();  
+	}
+	
+    var handleFailure = function(k){
+	   IsPHPAvailable = false;
+	   objStatus.innerHTML = txtPHPNotOK;
+    }
+	
+	var callback ={
+	  success: handleSuccess,
+	  failure: handleFailure,
+	  cache: false
+	};
+	YAHOO.util.Connect.asyncRequest('GET', sUrl, callback);
+} //end function 
+
+//Get Script EXT by language available 
+function GetScriptLanguageExt(){
+	  if (IsASPAvailable && IsPHPAvailable){
+		 return ServerDeployScriptLanguageExt; //Return user script language Ext 
+	  } else if (IsASPAvailable) {
+		 return ".asp"; 
+	  } else if (IsPHPAvailable) {
+		 return  ".php";
+	  }
+} //end function 
+
+//submit logon form 
+function submitlogin() {
+    document.getElementById("hdnDBType").value = ServerDeployDatabaseType; //Database type that user choose when deploy 
+	var divStatusObj = document.getElementById("AdminNavigation");
+    divStatusObj.innerHTML = adminHTMLAJAXLoader;
+	//alert(adminHTMLAJAXLoader);
+	document.getElementById("spBackToMenu").style.display = "none";
+	
+	var handleSuccess = function(o){
+		divStatusObj.innerHTML = o.responseText;  //show result 
+	}
+	var handleFailure = function(o){
+		IsMySQLConnectedOK = false;
+		divStatusObj.innerHTML = '<li class="ErrorMessageStyle">Error while response data from server</li>';
+		divStatusObj.innerHTML += '<li class="ErrorMessageStyle">Transaction id: ' + o.tId + '</li>';
+		divStatusObj.innerHTML += '<li class="ErrorMessageStyle">HTTP status: ' + o.status + '</li>';
+		divStatusObj.innerHTML += '<li class="ErrorMessageStyle">Status code message: ' + o.statusText + '</li>';
+	}
+	var callback ={
+	  success: handleSuccess,
+	  failure: handleFailure,
+	  cache: false
+	};
+  
+	var loginFormServer = "qsAdminLogin" + GetScriptLanguageExt();
+	document.frmLogin.action = loginFormServer;
+	var formObject = document.getElementById('frmLogin');
+	YAHOO.util.Connect.setForm(formObject);
+	var cObj = YAHOO.util.Connect.asyncRequest('POST', loginFormServer, callback);
+	
+}//end function 
+
+function BackToMenu() {
+   document.getElementById("spBackToMenu").style.display = "none";
+   var parameters = "Action=BackToMenu&DBType=" + ServerDeployDatabaseType;
+   var objResult = document.getElementById("AdminNavigation");  
+   objResult.innerHTML = adminHTMLAJAXLoader;
+   //Call AJAX Request 
+   CallYahooRequest(parameters, objResult, null);
+}
+
+//Show MySQL Run Script Admin Panel 
+function ShowMySQLLaunchScriptAdmin(){
+    var parameters = "Action=ShowMySQLAdmin";
+    var objResult = document.getElementById("AdminNavigation");
+	objResult.innerHTML = adminHTMLAJAXLoader;
+    //Call AJAX Request 
+	CallYahooRequest(parameters, objResult, null, ACT_SHOW_MYSQL_ADMIN);
+} // end function 
+
+//Shoe ADO connection Test Panel 
+function ShowADOConnectionTest(){
+    var parameters = "Action=ShowADOConnectionTest";
+    var objResult = document.getElementById("AdminNavigation");
+	objResult.innerHTML = adminHTMLAJAXLoader;
+    //Call AJAX Request 
+	CallYahooRequest(parameters, objResult, null, ACT_SHOW_ADO_CONN_TEST);
+} // end function 
+
+
+//Call AJAX by some parameters
+function CallYahooRequest(sParameters, obj1, obj2, sActionType){
+    var sUrl = "qsDBActions" + GetScriptLanguageExt() + "?";
+	
+	//Change URL for Test ADO Connection 
+	if (sActionType == ACT_TEST_ADO_CONN){
+	  sUrl = "../qs_functions.asp?";
+	}
+	
+    var divStatusObj = obj1;
+    var btnCreateObj = obj2;
+	if (btnCreateObj != null) btnCreateObj.disabled = true;
+	
+	//var argumentObj = eval('(' + sParameters + ')');
+	var handleSuccess = function(o){
+		//==== Check Login Security ====
+		if (o.responseText.indexOf("NOTLOGIN") >= 0) {
+		  window.location = 'QSSiteAdmin.html';
+		  return;
+		}
+		
+		//alert(o.responseText);
+		
+		divStatusObj.innerHTML = o.responseText;
+		if (btnCreateObj != null) btnCreateObj.disabled = false;
+
+		//==== MySQL Connection Test ======
+		if (sActionType == ACT_MYSQL_TEST) {  
+		   //alert(o.responseText); 
+		   //if (o.responseText != "OK"){ 
+		   if (o.responseText.indexOf("CONNECTEDOK") == -1){
+		     divStatusObj.innerHTML = '<span class="ErrorMessageStyle" > <b>Error</b> <br> ' + o.responseText + ' </span>';  
+		     document.getElementById("divRowMySQLDBList").style.display = "none";
+		   } else {
+		      divStatusObj.innerHTML = '<span class="cssConnectedOK" > Connected to MySQL Server is OK </span>';
+		      //Load MySQL DB List 
+		      LoadMySQLDatabaseList();
+		   }
+		} //
+		
+		//==== MySQL Database Connection Test ======
+		if (sActionType == ACT_MYSQL_DB_TEST) {
+		   //if (o.responseText != "OK"){  
+		   if (o.responseText.indexOf("CONNECTEDOK") == -1){
+		     IsMySQLConnectedOK = false;
+		     divStatusObj.innerHTML = '<span class="ErrorMessageStyle" > <b>Error</b> <br> ' + o.responseText + ' </span>';  
+		   } else {
+		      IsMySQLConnectedOK = true;
+		      SetCurrentMySQLConnectionSettings();
+			  divStatusObj.innerHTML = '<span class="cssConnectedOK" > Connected to MySQL Database is OK </span>';
+		   }
+		} //
+		
+	    //==== Create Database Action =====
+		if (sActionType == ACT_CREATE_DATABASE) {
+		   RefreshMySQLConnection();
+		}
+		
+		//==== Load MySQL Database List ======
+		if (sActionType == ACT_LOAD_MYSQL_DB_LIST) {
+		   divStatusObj.innerHTML = o.responseText;
+		   document.getElementById("divRowMySQLDBList").style.display = "block";
+		} //
+		
+		//======== Show MySQL Admin =========
+		if (sActionType == ACT_SHOW_MYSQL_ADMIN) {
+		   document.getElementById("spBackToMenu").style.display = "block";
+		}
+		
+		//======== Show Access ADO Connection Test 
+		if (sActionType == ACT_SHOW_ADO_CONN_TEST) {
+		   document.getElementById("spBackToMenu").style.display = "block";
+		   SetProviderAutoComplete();  
+		   LoadADOConnectionASPCode(); 
+		}
+		/*
+		try {
+		  YAHOODom.setStyle('divTablesList', 'height', ((YAHOODom.getClientHeight() - 350) < 150? 150: (YAHOODom.getClientHeight() - 350))  + 'px');
+	    } catch (e){
+		  //
+		}
+		*/
+	}
+    var handleFailure = function(o){
+	    IsMySQLConnectedOK = false;
+		divStatusObj.innerHTML = '<li class="ErrorMessageStyle">Error while response data from server</li>';
+		divStatusObj.innerHTML += '<li class="ErrorMessageStyle">Transaction id: ' + o.tId + '</li>';
+		divStatusObj.innerHTML += '<li class="ErrorMessageStyle">HTTP status: ' + o.status + '</li>';
+		divStatusObj.innerHTML += '<li class="ErrorMessageStyle">Status code message: ' + o.statusText + '</li>';
+		if (btnCreateObj != null) btnCreateObj.disabled = false;
+    }
+	var callback ={
+	  success: handleSuccess,
+	  failure: handleFailure,
+	  cache: false
+	};
+	
+   YAHOO.util.Connect.asyncRequest('GET', sUrl + sParameters, callback);
+} //end function  
+
+//Create MySQL database 
+function CreateDatabase(btnObj, divStatusName, sDatabaseName){
+  var divStatus = document.getElementById(divStatusName);
+  var parameters; 
+  btnObj.disabled = true;
+  divStatus.innerHTML = '<span class="WaitingStyle">&nbsp;&nbsp;Creating database ...</span>';
+  //Prepare Paramters 
+  parameters = "Action=CreateDatabase&DBName=" + sDatabaseName;
+  //Call Yahoo connect to URL 
+  CallYahooRequest(parameters, divStatus, btnObj, ACT_CREATE_DATABASE);
+} //end function 
+
+//Create MySQL tables 
+function CreateTable(btnObj, divStatusName, sScriptFileName, sTableName, sDBName){
+  var divStatus = document.getElementById(divStatusName);
+  var parameters;
+  
+  btnObj.disabled = true;
+  divStatus.innerHTML = '<span class="WaitingStyle">&nbsp;&nbsp;Creating table ...</span>';
+  //Assign object to global object 
+  //Prepare Paramters 
+  parameters = "Action=CreateTable&TableName=" + encodeURI(sTableName) + "&DBName=" + sDBName + "&ScriptFile=" + encodeURI(sScriptFileName);
+  //Call Yahoo connect to URL 
+  CallYahooRequest(parameters, divStatus, btnObj);   
+} //end function 
+
+//Create All of tables function 
+function CreateAllTables(btnObj, divStatusName, sScriptFileName, sDBName){
+  var divStatus = document.getElementById(divStatusName);
+  var parameters; 
+  btnObj.disabled = true;  
+  
+  divStatus.innerHTML = '<span class="WaitingStyle">&nbsp;&nbsp;Creating all tables ...</span>';  	  
+  //Prepare Paramters 
+  parameters = "Action=CreateAllTables&DBName=" + encodeURI(sDBName) + "&ScriptFile=" + encodeURI(sScriptFileName);
+  //Call Yahoo connect to URL 
+  CallYahooRequest(parameters, divStatus, btnObj);    
+} //end function
+
+function ShowHideDiv(sDivShowName, sDivHideName){
+  try {
+   document.getElementById(sDivShowName).style.display = "block";
+   document.getElementById(sDivHideName).style.display = "none";
+  } catch (e){
+    //
+  }
+}
+
+//Show/Hide Yahoo Panel Dialog 
+YAHOO.namespace("example.container");
+function ShowYahooDialog(isShow, sDivName) {
+        document.getElementById("divModalBackground").style.display = "none"; //Hide modal background div
+		// Instantiate a Panel from markup
+		YAHOO.example.container.Overlay1 = new YAHOO.widget.Overlay(sDivName, {fixedcenter:true, visible:false, draggable:true, modal:true} );
+		YAHOO.example.container.Overlay1.render();
+	    YAHOO.example.container.Overlay1.hide();
+	    if (isShow) { 
+		   try {
+		     document.getElementById("divModalBackground").style.height = parseInt(window.document.body.clientHeight + window.document.body.scrollTop); 
+		   } catch (e){
+		     //
+		   } 
+		   document.getElementById(sDivName).style.display = "block";
+		   document.getElementById("divModalBackground").style.display = "block"; //Show modal background div
+		   YAHOO.example.container.Overlay1.show();
+	    } 
+	
+}
+
+//Shoew MySQL Connection Info Dialog if connected OK
+var IsMySQLConnectedOK = false;
+function ShowConnectionInfoIfConnectedOK(){
+   ShowYahooDialog(false, 'divMySQLConnTest'); 
+   if (IsMySQLConnectedOK) {
+	 LoadCurrentMySQLConnectionSettings();
+	 ShowYahooDialog(true, "divMySQLConnInfo");
+   }
+} //end function 
+  
+  
+function LoadMySQLDatabaseList(){
+   var serverName = document.getElementById("txtTestServerName").value;
+   var userName = document.getElementById("txtTestUserName").value;
+   var password = document.getElementById("txtTestPassword").value;
+   var portNumber = document.getElementById("txtTestPortNumber").value;
+   var objResult = document.getElementById("divMySQLDBList");
+   
+   document.getElementById("divRowMySQLDBList").style.display = "none";  
+   document.getElementById("spMySQLDBConnMessage").innerHTML = ""; 
+   
+   parameters = "Action=LoadMySQLDatabaseList";
+   parameters += "&ServerName=" + encodeURI(serverName);
+   parameters += "&PortNumber=" + encodeURI(portNumber);
+   parameters += "&UserName=" + encodeURI(userName);
+   parameters += "&Password=" + encodeURI(password);
+
+   //Call AJAX request 
+   CallYahooRequest(parameters, objResult, null, ACT_LOAD_MYSQL_DB_LIST);
+} //end function 
+  
+function RefreshMySQLConnection(){
+   var objResult = document.getElementById("spConnectionStatus");
+   //Call AJAX request 
+   var parameters = "Action=RefreshMySQLConnection";
+   CallYahooRequest(parameters, objResult, null);
+}
+  
+//Test MySQL connection
+function TestMySQLConnection(btnObj, ResultName, sActionType){
+   var parameters = "";
+   var DBName = "";
+   var serverName = document.getElementById("txtTestServerName").value;
+   var userName = document.getElementById("txtTestUserName").value;
+   var password = document.getElementById("txtTestPassword").value;
+   var portNumber = document.getElementById("txtTestPortNumber").value;
+   var DBNameObj = document.getElementById("selMySQLDBList");
+   var objResult = document.getElementById(ResultName);
+   
+   if (DBNameObj != null) DBName = DBNameObj.value;
+  
+   if (sActionType == ACT_MYSQL_TEST) parameters = "Action=TestMySQLConnection";
+   else parameters = "Action=TestMySQLDBConnection";
+    
+   parameters += "&ServerName=" + encodeURI(serverName);
+   parameters += "&PortNumber=" + encodeURI(portNumber);
+   parameters += "&UserName=" + encodeURI(userName);
+   parameters += "&Password=" + encodeURI(password);
+   parameters += "&DBName=" + encodeURI(DBName);
+   
+   objResult.innerHTML = '<span class="CreateAllText">Connecting to server...</span>';
+   
+   CallYahooRequest(parameters, objResult, btnObj, sActionType);
+  
+} //end fucntion 
+ 
+
+function EnabledLoginButtonByServerAvailable(){
+    if ((!IsASPAvailable) && (!IsPHPAvailable)) {
+	  document.getElementById("divASPPHPDetectedStatus").style.display = "block";
+	  document.getElementById("btnLogin").disabled = true;
+	  document.getElementById("btnReset").disabled = true;
+	} else {
+	  document.getElementById("divASPPHPDetectedStatus").style.display = "none";
+	  document.getElementById("btnLogin").disabled = false;
+	  document.getElementById("btnReset").disabled = false;
+	} 
+	UpdateASPPHPAvailableSession();
+} 
+ 
+function UpdateASPPHPAvailableSession(){
+   var objResult = document.getElementById("FakeDiv");
+   var parameters = "Action=UpdateASPPHPAvailableSession";
+   parameters += "&ASPAvailable=" + (IsASPAvailable? "True": "False");
+   parameters += "&PHPAvailable=" + (IsPHPAvailable? "True": "False");
+   
+   CallYahooRequest(parameters, objResult, null);
+}
+ 
+function ShowMySQLTestConnectionPanel(){
+   ClearCurrentMySQLConnectionSettings();
+   IsMySQLConnectedOK = false;
+   document.getElementById("spMySQLConnMessage").innerHTML = "";
+   document.getElementById("spMySQLDBConnMessage").innerHTML = "";
+   document.getElementById("divRowMySQLDBList").style.display = "none";
+   ShowYahooDialog(true, 'divMySQLConnTest');
+}
+
+//Current Test MySQL Setting Variables 
+var CurrentMySQLTestSettingServerName = "";
+var CurrentMySQLTestSettingPortNumber = "";
+var CurrentMySQLTestSettingUserName = "";
+var CurrentMySQLTestSettingPassword = "";
+var CurrentMySQLTestSettingDBName = "";
+
+function SetCurrentMySQLConnectionSettings(){
+	 CurrentMySQLTestSettingServerName = document.getElementById("txtTestServerName").value;
+	 CurrentMySQLTestSettingPortNumber = document.getElementById("txtTestPortNumber").value;
+	 CurrentMySQLTestSettingUserName = document.getElementById("txtTestUserName").value;
+	 CurrentMySQLTestSettingPassword = document.getElementById("txtTestPassword").value;
+	 CurrentMySQLTestSettingDBName = (document.getElementById("selMySQLDBList")!= null? document.getElementById("selMySQLDBList").value : "");
+}
+
+function ClearCurrentMySQLConnectionSettings(){
+	CurrentMySQLTestSettingServerName = "";
+	CurrentMySQLTestSettingPortNumber = "";
+	CurrentMySQTestLSettingUserName = "";
+	CurrentMySQLTestSettingPassword = "";
+	CurrentMySQLTestSettingDBName = "";
+}
+
+function LoadCurrentMySQLConnectionSettings(){
+   var objTestServerName  = document.getElementById("spTestServerName");
+   var objTestPortNumber = document.getElementById("spTestPortNumber");
+   var objTestUserName = document.getElementById("spTestUserName");
+   var objTestPassword = document.getElementById("spTestPassword");
+   var objTestDBName = document.getElementById("spTestDBName");
+   
+   var objProjServerName  = document.getElementById("spProjSettingServerName");
+   var objProjPortNumber = document.getElementById("spProjSettingPortNumber");
+   var objProjUserName = document.getElementById("spProjSettingUserName");
+   var objProjPassword = document.getElementById("spProjSettingPassword");
+   var objProjDBName = document.getElementById("spProjSettingDBName");
+
+   objTestServerName.innerHTML = CurrentMySQLTestSettingServerName;
+   objTestPortNumber.innerHTML = (CurrentMySQLTestSettingPortNumber != ""? CurrentMySQLTestSettingPortNumber: "-");
+   objTestUserName.innerHTML = CurrentMySQLTestSettingUserName;
+   objTestPassword.innerHTML = CurrentMySQLTestSettingPassword;
+   objTestDBName.innerHTML = CurrentMySQLTestSettingDBName;
+
+   if (objProjServerName.innerHTML.toUpperCase() == objTestServerName.innerHTML.toUpperCase()){ 
+     objProjServerName.className = "cssConnSameSetting";
+	 objTestServerName.className = "cssConnSameSetting";
+   } else {
+     objProjServerName.className = "cssConnCurrectSetting";
+	 objTestServerName.className = "cssConnTestSetting";
+   }
+   
+   if (objProjPortNumber.innerHTML.toUpperCase() == objTestPortNumber.innerHTML.toUpperCase()){
+     objProjPortNumber.className = "cssConnSameSetting";
+	 objTestPortNumber.className = "cssConnSameSetting";
+   } else {
+     objProjPortNumber.className = "cssConnCurrectSetting";
+	 objTestPortNumber.className = "cssConnTestSetting";
+   }
+
+  if (objProjUserName.innerHTML.toUpperCase() == objTestUserName.innerHTML.toUpperCase()){
+     objProjUserName.className = "cssConnSameSetting";
+	 objTestUserName.className = "cssConnSameSetting";
+   } else {
+     objProjUserName.className = "cssConnCurrectSetting";
+	 objTestUserName.className = "cssConnTestSetting";
+   }
+   
+   if (objProjPassword.innerHTML.toUpperCase() == objTestPassword.innerHTML.toUpperCase()){
+     objProjPassword.className = "cssConnSameSetting";
+	 objTestPassword.className = "cssConnSameSetting";
+   } else {
+     objProjPassword.className = "cssConnCurrectSetting";
+	 objTestPassword.className = "cssConnTestSetting";
+   }
+
+
+   if (objProjDBName.innerHTML.toUpperCase() == objTestDBName.innerHTML.toUpperCase()){
+     objProjDBName.className = "cssConnSameSetting";
+	 objTestDBName.className = "cssConnSameSetting";
+   } else {
+     objProjDBName.className = "cssConnCurrectSetting";
+	 objTestDBName.className = "cssConnTestSetting";
+   }
+   
+} //end function 
+
+
+function cell_over(cell, classname) {
+    if (document.all || document.getElementById) {
+        cell.classBackup = cell.className;
+        cell.className   = classname;
+    }
+}
+function cell_out(cell)
+{
+    if (document.all || document.getElementById) {
+        cell.className   = cell.classBackup;
+    }
+}
+
+
+function BuildAccessConnStr(sObjResultName, sObjDBFolderName, sObjDBFileName) {
+	var ProviderSyn = "\"Provider=" + document.getElementById("txtProviderName").value;
+	var DBFolderName = document.getElementById(sObjDBFolderName).value; 
+	var DBFileName = document.getElementById(sObjDBFileName).value;
+	var objResult = document.getElementById(sObjResultName);
+	
+	if (Trim(DBFolderName) == "") DBFolderName = ".";
+	
+	var connString = "" +
+	 " dim ConnDBFolder " +
+	 "\n dim ConnDBFile " +
+	 "\n dim Connect_String " +
+	 "\n ConnDBFolder =\"" + DBFolderName + "\" " +
+	 "\n ConnDBFile =\""+ DBFileName + "\"" +
+	 "\n " +
+	 "\n Connect_String = " + ProviderSyn + ";Data Source=\" & Server.MapPath(ConnDBFolder) & \"\\\" & ConnDBFile"+
+	 " & \";Persist Security Info=False\"";
+	
+	 objResult.value = connString;
+	 return connString;
+ 
+} //end function 
+
+
+function TestAccessADOConnection(objThis, sResultName){
+   var objResult = document.getElementById(sResultName);
+   var DBFolder = document.getElementById("dbPath").value;
+   var DBFileName = document.getElementById("mdbfile").value;
+   var DBConnCode = encodeURIComponent(document.getElementById("memASPConnCode").value);
+  
+   var parameters = "Action=TestAccessADOConn"
+   parameters += "&DBFolder=" + encodeURI(DBFolder);
+   parameters += "&DBFileName=" + encodeURI(DBFileName);
+   parameters += "&DBConnCode=" + DBConnCode;
+   
+   //alert(parameters);
+   
+   objResult.innerHTML = adminHTMLAJAXLoader2;
+   ShowYahooDialog(true, 'divAccessADOConnTest');
+   
+   CallYahooRequest(parameters, objResult, objThis, ACT_TEST_ADO_CONN);
+}//end fucntion 
+
+function LoadADOConnectionASPCode(){
+ try {
+	   var isUseCustomCode = document.getElementById("hdnUseCustomCode").value;
+	   if (isUseCustomCode.toLowerCase() == "true"){
+		  document.getElementById("memASPConnCode").value = document.getElementById("memConnCustomCode").value;
+	   } else {
+		  document.getElementById("memASPConnCode").value = BuildAccessConnStr('memASPConnCode', 'dbPath', 'mdbfile');
+	   }
+  } catch (e) {
+     //
+  }
+} //end function 
+
+
+function SetProviderAutoComplete(){
+   try {
+		YAHOO.example.Data.arrayStates = [
+		   "Microsoft.Jet.OLEDB.4.0",
+		   "Microsoft.ACE.OLEDB.12.0"
+		];
+	
+		YAHOO.example.BasicLocal = function() {
+			// Use a LocalDataSource
+			var oDS = new YAHOO.util.LocalDataSource(YAHOO.example.Data.arrayStates);
+			// Optional to define fields for single-dimensional array
+			oDS.responseSchema = {fields : ["state"]};
+		
+			// Instantiate the AutoComplete
+			var oAC = new YAHOO.widget.AutoComplete("txtProviderName", "divProviderContainer", oDS);
+			oAC.prehighlightClassName = "yui-ac-prehighlight";
+			oAC.useShadow = true;
+			
+			return {
+				oDS: oDS,
+				oAC: oAC
+			};
+		}();
+	} catch (e){
+	  //
+	}
+} //end function 
+
+function GetDefaultProviderName(){
+   var objTxtProvider = document.getElementById("txtProviderName");
+   if (Trim(objTxtProvider.value) == "") objTxtProvider.value = "Microsoft.Jet.OLEDB.4.0";
+} //end function 
+
+
+
+
+
+</script>
+
+<link href="QSAdminCSS.css" type="text/css" rel="stylesheet" />
+</head>
+
+<body class="yui-skin-sam" topmargin="0" leftmargin="0" onload="DetectASPServer(); DetectPHPServer();">
+
+		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+		  <tr background="images/index_topbanner_bg.gif">
+			<td height="100" align="left" valign="top" background="images/index_topbanner_bg.gif"><img src="images/index_topbanner_left.gif" width="323" height="100" /></td>
+			<td height="100" align="right" valign="top" background="images/index_topbanner_bg.gif"><img src="images/index_topbanner_right.gif" width="18" height="100" /></td>
+		  </tr>
+		</table>
+
+  
+     <table width="100%" height="440" border="0" cellpadding="0" cellspacing="0">
+      
+      <tr>
+        <td width="255" valign="top" background="images/index_leftpane_bg.jpg"><table width="255" height="100%" border="0" cellpadding="0" cellspacing="0" background="images/index_leftpane_bg.jpg">
+          <tr>
+            <td width="225" height="54" align="left" valign="top"><div align="center"><font color="#CC3300" size="4" face="Arial Black">Site Administration</font></div></td>
+            </tr>
+          <tr>
+            <td height="283" align="left" valign="top" style="background-repeat:no-repeat" background="images/index_companylogo.jpg"><table width="240" border="0" align="center" cellpadding="0" cellspacing="0">
+              <tr>
+                <td  width="225" height="184" align="center" valign="middle"><form id="frmLogin" name="frmLogin" method="post" action="">
+                  <table width="100%" border="0" align="center" cellpadding="2" cellspacing="3">
+                    <tr>
+                      <td width="32%" class="cssLoginCaptionText"><div align="right">Username</div></td>
+                            <td width="68%" align="left">
+                            <input name="AdminUser" type="text" class="cssTextLogin1" id="AdminUser" tabindex="1" size="15" />                          </td>
+                          </tr>
+                    <tr>
+                      <td class="cssLoginCaptionText"><div align="right">Password</div></td>
+                            <td align="left">
+                            <input name="AdminPass" type="password" class="cssTextLogin1" id="AdminPass" tabindex="2" size="15" />                          </td>
+                          </tr>
+                    <tr>
+                      <td>&nbsp;</td>
+                            <td><div align="left">
+                              <input type="hidden" name="dbType" id="hdnDBType" />
+                              <input name="Login" disabled="disabled" id="btnLogin" type="submit" onclick="submitlogin(); return false;" value="Login" tabindex="3" />
+                              <input name="LoginReset" disabled="disabled"  id="btnReset" type="reset" tabindex="4" value="Clear" />
+                            </div></td>
+                          </tr>
+                    <tr>
+                      <td colspan="2"><div id="divASPPHPDetectedStatus" class="ErrorMessageStyle" align="center">
+					       <span class="WaitingStyle"><br /><br />  Detecting Server... </span>
+						   </div></td>
+                          </tr>
+                    </table>
+                    </form></td>
+                  </tr>
+              </table></td>
+            </tr>
+          <tr>
+            <td width="225" height="63" align="center" valign="bottom">&nbsp;</td>
+            </tr>
+        </table></td>
+        <td width="13" height="391" valign="top" nowrap="nowrap">&nbsp;</td>
+        <td width="100%" valign="top" bgcolor="#FFFFFF">
+		
+		 
+				<table width="100%" border="0" cellspacing="0" cellpadding="5">
+				  <tr>
+				     <td class="HeadingsText" nowrap="nowrap"> 
+					 Tools to help you deploy and administer your site.	
+					 <span id="spBackToMenu" style="display:none;">
+					   <a href="javascript:BackToMenu();" class="LinkText">Back to Site Admin Menu</a>
+					 </span>
+					 </td>
+				  </tr>
+				 
+				  <tr>
+					<td><div class="InstructionText" id="AdminNavigation">
+					
+						<table width="83%" border="0" align="center" cellpadding="3" cellspacing="0" class="InstructionText">
+						  <tr>
+							<td height="30">Please log in on the left in order to access your administrative functions.</td>
+						  </tr>
+						  <tr>
+							<td>
+							<ul>
+								<li>Your Login Name is the first 4 characters of your 
+								license number.</li>
+								<li>Your password is the last 4 characters of your license number.						</li>
+							</ul>
+							E.g. If your license number is this: <br/><br/>
+							<span style="text-decoration: underline;padding-left: 30px">09B9</span>4513-465E-EE56-9907-55BE19427CED-C458-<span style="text-decoration: underline;">D6DB</span><br /><br/>
+							<span style="padding-left: 30px">Your UserName is '09B9' and your Password is 'D6DB'</span></td>
+						  </tr>
+						  <tr>
+							<td>This information is found in dbQwikSite &gt; Help &gt; About </td>
+						  </tr>
+						</table>
+					  
+					  
+					    </div></td>
+				  </tr>
+				  <tr>
+					<td></td>
+				  </tr>
+				</table>
+		
+		
+		
+		</td>
+      </tr>
+    </table>
+
+  
+
+	  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+		  <tr bgcolor="#EABC1D" class="footertext">
+			<td width="69%" height="25" align="left" valign="middle" style="background-position:top">&nbsp;MyComany Ltd. 222 Somestreet, Sometown, USA</td>
+			<td width="31%" align="right"><span id="divASPStatus" ></span>&nbsp;<span id="divPHPStatus" ></span>&nbsp;</td>
+		  </tr>
+	  </table>
+
+  
+  
+  <div id="FakeDiv" style="display:none;">
+  </div>
+
+
+
+
+
+<script language="javascript">   
+/*
+var YAHOODom = YAHOO.util.Dom,
+    YAHOOEvent = YAHOO.util.Event;
+(function() {
+
+    YAHOOEvent.onDOMReady(function() {
+        var layout = new YAHOO.widget.Layout('doc1', {
+            height: YAHOODom.getClientHeight(), //Height of the viewport
+            width: YAHOODom.get('doc1').clientWidth, //Width of the outer element
+            units: [
+                { position: 'top', height: 100, id: 'hd' },
+                { position: 'left', width: 255, id: 'nav', grids: true },
+                { position: 'bottom', height: 29, id: 'ft' },
+                { position: 'center', body: 'bd', grids: true }
+            ]
+        });
+        layout.on('beforeResize', function() {
+           YAHOODom.setStyle('doc1', 'height', YAHOODom.getClientHeight() + 'px');
+		   YAHOODom.setStyle('divTablesList', 'height', ((YAHOODom.getClientHeight() - 350) < 150? 150: (YAHOODom.getClientHeight() - 350))  + 'px');    
+	    });
+
+        layout.render();
+    });
+
+})();
+*/
+
+
+</script>
+
+<div class="modalBackground" id="divModalBackground" style="display:none;"></div>
+
+</body>
+</html>

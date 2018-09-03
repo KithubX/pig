@@ -1,0 +1,286 @@
+body {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px;
+}
+
+.yui-t1 {
+	MIN-WIDTH: 100%; MARGIN: auto; WIDTH: 56.25em; TEXT-ALIGN: left
+}
+.yui-b {
+	/*POSITION: relative;*/
+	/*background-image:url(images/index_leftpane_bg.jpg) ;*/
+}
+
+.yui-skin-sam .yui-ac {
+	FONT-SIZE: 100%; FONT-FAMILY: arial; POSITION: relative
+}
+.yui-skin-sam .yui-ac-input {
+	WIDTH: 100%;
+}
+.yui-skin-sam .yui-ac-container {
+	WIDTH: 100%; POSITION: absolute; TOP: 1.6em
+}
+.yui-skin-sam .yui-ac-content {
+	BORDER-RIGHT: #808080 1px solid; BORDER-TOP: #808080 1px solid; Z-INDEX: 9050; BACKGROUND: #fff; OVERFLOW: hidden; BORDER-LEFT: #808080 1px solid; WIDTH: 100%; BORDER-BOTTOM: #808080 1px solid; POSITION: absolute
+}
+.yui-skin-sam .yui-ac-shadow {
+	Z-INDEX: 9049; BACKGROUND: #000; FILTER: alpha(opacity=10); MARGIN: 0.3em; WIDTH: 100%; POSITION: absolute; -moz-opacity: 0.10; opacity: .10
+}
+.yui-skin-sam .yui-ac IFRAME {
+	PADDING-RIGHT: 0.3em; FILTER: alpha(opacity=0); PADDING-BOTTOM: 0.3em; opacity: 0
+}
+.yui-skin-sam .yui-ac-content UL {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; WIDTH: 100%; PADDING-TOP: 0px
+}
+.yui-skin-sam .yui-ac-content LI {
+	PADDING-RIGHT: 5px; PADDING-LEFT: 5px; PADDING-BOTTOM: 2px; MARGIN: 0px; CURSOR: default; PADDING-TOP: 2px; ZOOM: 1; WHITE-SPACE: nowrap; LIST-STYLE-TYPE: none
+}
+.yui-skin-sam .yui-ac-content LI.yui-ac-prehighlight {
+	BACKGROUND: #b3d4ff
+}
+.yui-skin-sam .yui-ac-content LI.yui-ac-highlight {
+	BACKGROUND: #426fd9; COLOR: #fff
+}
+<!--
+#Layer1 {
+	position:fixed;
+	width:auto;
+	height:115px;
+	z-index:2;
+}
+.HeadingsText {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	color: #999999;
+	font-weight: bold;
+	font-size: 16px;
+}
+
+.HeadingsCompanyUrl {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	color: #999999;
+	font-weight: bold;
+	font-size: 12px;
+}
+
+.NormalText {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	color: #999999;
+	font-size: 11px;
+}
+
+.cssConnTestHeader{
+ 	font-family: Verdana, Arial, Helvetica, sans-serif;
+	color: #666666;
+	font-size: 11px;
+	font-weight:bold;
+}
+
+.cssConnString {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	color: #336699;
+	font-size: 11px;
+}
+
+.InstructionText {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	color: #666666;
+	font-size: 12px;
+}
+
+.WarningText {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	color: #FF9900;
+	font-size: 11px;
+}
+
+.cssConnDescText {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	color: #666666;
+	font-size: 11px;
+}
+
+.cssConnCurrectSetting {
+  	font-family: Verdana, Arial, Helvetica, sans-serif;
+	color: #993300;
+	font-size: 10px;
+
+}
+
+.cssConnTestSetting {
+ 	font-family: Verdana, Arial, Helvetica, sans-serif;
+	color: #006600;
+	font-size: 10px;
+} 
+
+
+.cssConnSameSetting{
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+	color: #000000;
+	font-size: 10px;
+}
+
+.cssLoginCaptionText {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	color: #666666;
+	font-size: 10px;
+}
+
+.footertext {
+	color: #FFFFFF;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 9px;
+	font-weight: bold;
+}
+#apDiv1 {
+	/* position:absolute;
+	left:27px;
+	top:104px;
+	width:167px;
+	height:33px;
+	z-index:1;*/
+}
+#apDiv2 {
+	/* position:absolute; 
+	left:17px;
+	top:470px;
+	width:185px;
+	height:30px;
+	z-index:2;*/
+}
+.GroupText {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	color: #999999;
+	font-weight: bold;
+	font-size: 14px;
+}
+
+.trTableRowOdd{
+   background-color:#FFFBF9;
+}
+
+.trTableRow{
+   background-color:#FFFFFF;
+}
+
+.trTableRowHover{
+   background-color:#FEF5E2; 
+}
+
+  .ErrorMessageStyle{
+     font-size:10px;
+	 color:#FF0000;
+	 font-family:Arial, Helvetica, sans-serif;
+  }
+  
+  .SuccessMessageStyle {
+     font-size:10px;
+	 color:#009933;
+	 font-family:Arial, Helvetica, sans-serif;
+  }
+  
+  .WaitingStyle{
+     font-size:10px;
+	 color:#006699;
+	 font-family:Arial, Helvetica, sans-serif;
+  }
+  
+  .ServerInfo{
+     font-size:12px;
+	 color:#006699;
+	 font-family:Arial, Helvetica, sans-serif;
+  }
+  .BtnCreateDBStyle{
+     font-size:11px;
+	 color:#990000;
+	 font-family:Arial, Helvetica, sans-serif;
+  }
+  
+  .BtnCreateStyle{
+     font-size:11px;
+	 color:#006699;
+	 font-family:Arial, Helvetica, sans-serif;
+  }
+  
+  .BtnTestStyle{
+     font-size:12px;
+	 color:#006699;
+	 font-family:Arial, Helvetica, sans-serif;
+	 font-weight:bold;
+  }
+  
+  .CreateAllText{
+     font-size:12px;
+	 color:#006699;
+	 font-family:Arial, Helvetica, sans-serif;
+  }
+  
+  .CreateTableText{
+     font-size:12px;
+	 color:#000000;
+	 font-family:Arial, Helvetica, sans-serif;
+  }
+  
+  .TextCaption {
+     font-size:14px;
+	 color:#000000;
+	 font-family:Arial, Helvetica, sans-serif;
+  }
+  
+  .LinkText{
+     font-size:12px;
+	 color:#006699;
+	 text-decoration:underline;
+	 font-family:Arial, Helvetica, sans-serif;
+  }
+
+.cssConnectedOK{
+   color:#009900;
+   font-weight:bold;
+   font-family:Arial, Helvetica, sans-serif;
+   font-size:12px;
+}
+
+.cssConnectedNotOK {
+   color:#FF0000;
+  /* font-weight:bold;*/
+   font-family:Arial, Helvetica, sans-serif;
+   font-size:12px;
+}
+ 
+
+.modalBackground{
+    filter: Alpha(Opacity=30);
+	-moz-opacity:0.4;
+    opacity: 0.4;
+    width: 100%;
+	height: 100%; 
+	min-height: 100%;
+	background-color: #999999;
+    position: absolute;
+    z-index: 500;
+    top: 0px; 
+	left: 0px;
+}
+
+.cssTextLogin{
+    filter: Alpha(Opacity=70);
+	-moz-opacity:0.7;
+    opacity: 0.7;
+	font-weight:bold;
+}
+
+.cssTextLogin1 {    filter: Alpha(Opacity=70);
+	-moz-opacity:0.7;
+    opacity: 0.7;
+	font-weight:bold;
+}
+
+#divTablesList{
+   /* border: .1em dotted #F3D19E; */
+  	scrollbar-face-color: #F4E3AA; 
+	scrollbar-highlight-color:#F4E3AA; 
+	scrollbar-3dlight-color: #FFFFFF; 
+	scrollbar-darkshadow-color: #FFF4FE; 
+	scrollbar-shadow-color: #FFFFFF; 
+	scrollbar-arrow-color: #000000; 
+	scrollbar-track-color: #ffffff; 
+}

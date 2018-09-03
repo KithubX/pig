@@ -1,0 +1,34 @@
+BODY { background: #FFFFFF; color: #003D79;
+       font-family: Verdana;
+       font-size: 8pt;
+}
+div {border: 0px; padding: 0px; margin: 0px}
+img {border: 0px; padding: 0px; margin: 0px}
+td {       font-size: 8pt;
+}
+A:link { color: #0989E8; }
+A:visited { color: #4E61A3; }
+A:active { color: #6D07F8; }
+.ThRows { background-color: #24547B; color: #F2F2F2;
+          font-weight: bold; text-align: center;
+       font-family: Verdana;
+       font-size: 8pt;
+}
+.TrRows { background-color: #D5F0F9; color: #000000;
+       font-family: Verdana;
+       font-size: 8pt;
+}
+.TrOdd  { background-color: #ECF3F4; color: #000000;
+       font-family: Verdana;
+       font-size: 8pt;
+}.TrHover { background-color: #CAFFFF;; color: #000000;;
+       font-family: Verdana;
+       font-size: 8pt;
+       text-align: left;
+}
+.Pig_4_TableTitle { background-color: #24547B;; color: #F2F2F2;; text-align: center; font-size: 11px; font-weight: normal; font-family: Verdana;} 
+.Pig_4_TableText { background-color: #24547B;; color: #F2F2F2;; text-align: left; font-size: 11px; font-weight: normal; font-family: Verdana;} 
+.Pig_4_DataText { background-color: #ECF3F4;; color: #000000;; text-align: left;} 
+.Pig_4_OddDataText { background-color: #D5F0F9;; color: #000000;; text-align: left;} 
+.Pig_4_TableButtons { background-color: #24547B;; text-align: center;} 
+

@@ -1,0 +1,186 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>dbQwikSite Website</title>
+    <meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type" /><!--core Yahoo --><!--For AJAX -->
+    <style type="text/css">
+
+<!--
+#Layer1 {
+	position:fixed;
+	width:auto;
+	height:115px;
+	z-index:2;
+}
+.GroupText{
+  	font-family: Verdana, Arial, Helvetica, sans-serif;
+	color: #999999;
+	font-size: 12px;
+}
+
+.HeadingsText {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	color: #999999;
+	font-weight: bold;
+	font-size: 14px;
+}
+.NormalText {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	color: #999999;
+	font-size: 12px;
+}
+.footertext {
+	color: #FFFFFF;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 9px;
+	font-weight: bold;
+}
+.email_link {
+	color: #CC3300;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 9px;
+	font-weight: bold;
+	text-decoration:none
+}
+
+#apDiv1 {
+	position:absolute;
+	left:27px;
+	top:104px;
+	width:167px;
+	height:33px;
+	z-index:1;
+}
+#apDiv2 {
+	position:absolute;
+	left:18px;
+	top:422px;
+	width:185px;
+	height:30px;
+	z-index:2;
+}
+
+#NavigationLinks{
+    border: .1em dotted #F3D19E; 
+  	scrollbar-face-color: #F4E3AA; 
+	scrollbar-highlight-color:#F4E3AA; 
+	scrollbar-3dlight-color: #FFFFFF; 
+	scrollbar-darkshadow-color: #FFF4FE; 
+	scrollbar-shadow-color: #FFFFFF; 
+	scrollbar-arrow-color: #000000; 
+	scrollbar-track-color: #ffffff; 
+}
+-->
+    </style>
+  <script type="text/javascript" src="http://yui.yahooapis.com/2.5.1/build/yahoo/yahoo-min.js"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/2.5.1/build/event/event-min.js"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/2.5.1/build/connection/connection-min.js"></script>
+<script>
+  /* 
+   * This script will handle the retrieval and display of the site pages index.
+   *
+   */
+
+  var sUrl = "QSSiteNav.html";
+  var div;
+
+  var handleSuccess = function(o) {
+ 	if(o.responseText !== undefined){
+		div.innerHTML    = o.responseText;
+	}
+  }
+
+  var handleFailure = function(o) {
+	if(o.responseText !== undefined) {
+	    div.innerHTML = "<br/>Unable to locate any dbQwikSite Navigation HTML file.";
+		div.innerHTML += "<br/>-----------------------------------------------------";
+		div.innerHTML += "<br/>Transaction id: " + o.tId + "";
+		div.innerHTML += "<br/>HTTP status: " + o.status + "";
+		div.innerHTML += "<br/>Status code message: " + o.statusText + "";
+	}
+  }
+
+var callback =
+{
+  success:handleSuccess,
+  failure: handleFailure
+};
+
+function loadNavIndex() {
+  div = document.getElementById('SiteNavigation');
+  var request = YAHOO.util.Connect.asyncRequest('GET', sUrl, callback);
+}
+
+</script>
+</head>
+  <body class="yui-skin-sam" leftmargin="0" topmargin="0">
+    <table cellspacing="0" cellpadding="0" width="100%" border="0">
+      <tbody>
+        <tr>
+          <td class="footertext" height="38" background="images/bg.gif" colspan="4">
+            <table cellspacing="0" cellpadding="0" width="100%" border="0">
+              <tbody>
+                <tr background="images/index_topbanner_bg.gif">
+                  <td height="100" valign="top" background="images/index_topbanner_bg.gif" align="left">&nbsp;</td>
+                  <td height="100" valign="top" background="images/index_topbanner_bg.gif" align="right"><img src="./images/index_topbanner_right.gif" width="18" height="100" /></td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top" background="images/index_leftpane_bg.jpg" width="261">
+            <table cellspacing="0" cellpadding="0" width="97%" border="0">
+              <tbody>
+                <tr>
+                  <td height="56" width="255" align="left">
+                    <div align="center"><font color="#cc3300" size="5" face="Arial Black">
+                        <div>
+                          <div><a href="./global_group_login.php">Welcome</a></div>
+                        </div></font>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td height="296" valign="top" width="255" align="left"><img src="./images/index_companylogo.jpg" width="246" height="274" /></td>
+                </tr>
+                <tr>
+                  <td height="50" valign="top" width="255" align="center"><strong class="HeadingsText"><strong>www.MyCompany.com</strong></strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+          <td valign="top" width="749" colspan="3">
+            <script language="javascript" src="./js/qs_menu.js"></script>qsnavmenu show="off" name="qs_menu">&nbsp;</qsnavmenu>
+            <table cellspacing="0" cellpadding="0" width="98%" border="0">
+              <tbody>
+                <tr>
+                  <td width="1%">&nbsp;</td>
+                  <td height="30" valign="top"><span class="HeadingsText">&nbsp;Please Visit Our Pages:</span></td>
+                </tr>
+                <tr>
+                  <td width="1%">&nbsp;</td>
+                  <td width="99%">
+                    <div id="SiteNavigation" class="NormalText" align="left">&nbsp;&nbsp;This area will load the site navigation</div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td class="footertext" bgcolor="#eabc1d" height="25" colspan="4">
+            <table cellspacing="0" cellpadding="0" width="100%" border="0">
+              <tbody>
+                <tr>
+                  <td valign="middle" align="left">&nbsp;MyComany Ltd. 222 Somestreet, Sometown, USA </td>
+                  <td align="right">Contact Phone: (112) 111-1123 Email: <a class="email_link" href="mailto:sales@mycompany.com">Sales@MyCompany.com</a> </td>
+                </tr>
+              </tbody>
+            </table>
+            <div align="right">&nbsp;</div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>
